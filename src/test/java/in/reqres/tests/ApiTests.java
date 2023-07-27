@@ -1,12 +1,18 @@
-package in.reqres;
+package in.reqres.tests;
 
+import in.reqres.models.CreateBodyModel;
+import in.reqres.models.CreateResponseModel;
 import org.junit.jupiter.api.Test;
 
+import static in.reqres.specs.CommonSpec.createUserRequestSpec;
+import static in.reqres.specs.CommonSpec.createUserResponseSpec;
+import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ApiTests extends TestBase {
 
@@ -50,23 +56,24 @@ public class ApiTests extends TestBase {
 
     @Test
     void successfulCreateUserTest() {
+        CreateBodyModel createData = new CreateBodyModel();
+        createData.setName("morpheus");
+        createData.setJob("leader");
 
-        String createData = "{ \"name\": \"morpheus\", \"job\": \"leader\" }";
+        CreateResponseModel createResponse = step("Make request", () ->
+                given(createUserRequestSpec)
+                        .body(createData)
+                        .when()
+                        .post("/users")
+                        .then()
+                        .spec(createUserResponseSpec)
+                        .extract().as(CreateResponseModel.class));
 
-        given()
-                .log().uri()
-                .log().method()
-                .log().body()
-                .contentType(JSON)
-                .body(createData)
-                .when()
-                .post("/users")
-                .then()
-                .log().status()
-                .log().body()
-                .statusCode(201)
-                .body("name", is("morpheus"))
-                .body("job", is("leader"));
+        step("Check response", () -> {
+                    assertEquals("morpheus", createResponse.getName());
+                    assertEquals("leader", createResponse.getJob());
+                }
+        );
     }
 
     @Test
