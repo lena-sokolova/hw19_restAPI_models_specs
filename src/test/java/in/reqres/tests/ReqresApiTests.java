@@ -1,6 +1,7 @@
 package in.reqres.tests;
 
 import in.reqres.models.*;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static in.reqres.specs.CommonSpec.*;
@@ -11,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ReqresApiTests extends TestBase {
 
     @Test
+    @DisplayName("Check getting single user data")
     void getSingleUserTest() {
 
         GetSingleUserResponseModel getSingleUserResponse = step("Make request", () ->
@@ -30,6 +32,7 @@ public class ReqresApiTests extends TestBase {
     }
 
     @Test
+    @DisplayName("Check getting list resources")
     void getListResourceTest() {
 
         GetListResourceResponseModel getListResourceResponse = step("Make request", () ->
@@ -54,6 +57,7 @@ public class ReqresApiTests extends TestBase {
     }
 
     @Test
+    @DisplayName("Check successful user creation")
     void successfulCreateUserTest() {
         CreateUserModel createData = new CreateUserModel();
         createData.setName("morpheus");
@@ -76,6 +80,7 @@ public class ReqresApiTests extends TestBase {
     }
 
     @Test
+    @DisplayName("Check successful user updating")
     void successfulUpdateUserTest() {
         CreateUserModel updateData = new CreateUserModel();
         updateData.setName("morpheus");
@@ -98,6 +103,7 @@ public class ReqresApiTests extends TestBase {
     }
 
     @Test
+    @DisplayName("Check successful user deletion")
     void successfulDeleteUserTest() {
 
         step("Delete user", () ->
