@@ -50,5 +50,13 @@ public class CommonSpec {
             .expectStatusCode(200)
             .expectBody(matchesJsonSchemaInClasspath("schemas/get-list-resources-schema.json"))
             .build();
+
+    public static ResponseSpecification updateUserResponseSpec200 = new ResponseSpecBuilder()
+            .log(STATUS)
+            .log(BODY)
+            .expectBody("updatedAt", notNullValue())
+            .expectStatusCode(200)
+            .expectBody(matchesJsonSchemaInClasspath("schemas/update-user-schema.json"))
+            .build();
 }
 

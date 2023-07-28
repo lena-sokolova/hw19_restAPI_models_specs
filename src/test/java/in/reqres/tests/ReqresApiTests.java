@@ -1,9 +1,6 @@
 package in.reqres.tests;
 
-import in.reqres.models.CreateUserModel;
-import in.reqres.models.CreateUserResponseModel;
-import in.reqres.models.GetListResourceResponseModel;
-import in.reqres.models.GetSingleUserResponseModel;
+import in.reqres.models.*;
 import org.junit.jupiter.api.Test;
 
 import static in.reqres.specs.CommonSpec.*;
@@ -66,7 +63,7 @@ public class ReqresApiTests extends TestBase {
         createData.setName("morpheus");
         createData.setJob("leader");
 
-        CreateUserResponseModel createResponse = step("Make request", () ->
+        CreateUserResponseModel createUserResponse = step("Make request", () ->
                 given(userRequestSpec)
                         .body(createData)
                         .when()
@@ -76,31 +73,32 @@ public class ReqresApiTests extends TestBase {
                         .extract().as(CreateUserResponseModel.class));
 
         step("Check response", () -> {
-                    assertEquals("morpheus", createResponse.getName());
-                    assertEquals("leader", createResponse.getJob());
+                    assertEquals("morpheus", createUserResponse.getName());
+                    assertEquals("leader", createUserResponse.getJob());
                 }
         );
     }
 
     @Test
     void successfulUpdateUserTest() {
+        CreateUserModel updateData = new CreateUserModel();
+        updateData.setName("morpheus");
+        updateData.setJob("zion resident");
 
-        String updateData = "{ \"name\": \"morpheus\", \"job\": \"zion resident\" }";
-
-        given()
-                .log().uri()
-                .log().method()
-                .log().body()
-                .contentType(JSON)
+        UpdateUserResponseModel updateUserResponse = step("Make request", () ->
+                given(userRequestSpec)
                 .body(updateData)
                 .when()
                 .put("/users/2")
                 .then()
-                .log().status()
-                .log().body()
-                .statusCode(200)
-                .body("name", is("morpheus"))
-                .body("job", is("zion resident"));
+                .spec(updateUserResponseSpec200)
+                .extract().as(UpdateUserResponseModel.class));
+
+        step("Check response", () -> {
+                    assertEquals("morpheus", updateUserResponse.getName());
+                    assertEquals("zion resident", updateUserResponse.getJob());
+                }
+        );
     }
 
     @Test
