@@ -27,7 +27,7 @@ public class CommonSpec {
             .expectBody("id", notNullValue())
             .expectBody("createdAt", notNullValue())
             .expectStatusCode(201)
-            .expectBody(matchesJsonSchemaInClasspath("schemas/create-user-schema"))
+            .expectBody(matchesJsonSchemaInClasspath("schemas/create-user-schema.json"))
             .build();
 
     public static ResponseSpecification getSingleUserResponseSpec200 = new ResponseSpecBuilder()
@@ -36,6 +36,6 @@ public class CommonSpec {
             .expectBody("data.email", notNullValue())
             .expectBody("data.avatar", notNullValue())
             .expectStatusCode(200)
-            .expectBody(matchesJsonSchemaInClasspath("schemas/get-single-user-schema"))
+            .expectBody(matchesJsonSchemaInClasspath("schemas/get-single-user-schema.json"))
             .build();
 }
