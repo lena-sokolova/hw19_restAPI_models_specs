@@ -38,4 +38,17 @@ public class CommonSpec {
             .expectStatusCode(200)
             .expectBody(matchesJsonSchemaInClasspath("schemas/get-single-user-schema.json"))
             .build();
+
+    public static ResponseSpecification getListResourceResponseSpec200 = new ResponseSpecBuilder()
+            .log(STATUS)
+            .log(BODY)
+            .expectBody("page", notNullValue())
+            .expectBody("per_page", notNullValue())
+            .expectBody("total_pages", notNullValue())
+            .expectBody("data", notNullValue())
+            .expectBody("support", notNullValue())
+            .expectStatusCode(200)
+            .expectBody(matchesJsonSchemaInClasspath("schemas/get-list-resources-schema.json"))
+            .build();
 }
+

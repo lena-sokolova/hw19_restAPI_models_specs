@@ -2,6 +2,7 @@ package in.reqres.tests;
 
 import in.reqres.models.CreateUserModel;
 import in.reqres.models.CreateUserResponseModel;
+import in.reqres.models.GetListResourceResponseModel;
 import in.reqres.models.GetSingleUserResponseModel;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +15,7 @@ import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ApiTests extends TestBase {
+public class ReqresApiTests extends TestBase {
 
     @Test
     void getSingleUserTest() {
@@ -38,21 +39,25 @@ public class ApiTests extends TestBase {
     @Test
     void getListResourceTest() {
 
-        given()
-                .log().uri()
-                .log().method()
-                .log().body()
-                .contentType(JSON)
+        GetListResourceResponseModel getListResourceResponse = step("Make request", () ->
+                given(userRequestSpec)
                 .when()
                 .get("/unknown")
                 .then()
-                .log().status()
-                .log().body()
-                .statusCode(200)
-                .body("data.id", hasSize(6))
-                .body("total", is(12))
-                .body("data.name", hasItems("cerulean", "fuchsia rose", "true red", "aqua sky", "tigerlily",
-                        "blue turquoise"));
+                .spec(getListResourceResponseSpec200)
+                .extract().as(GetListResourceResponseModel.class));
+
+        step("Check response", () -> {
+                    assertEquals(12, getListResourceResponse.getTotal());
+                    assertEquals(6, getListResourceResponse.getData().size());
+                    assertEquals("cerulean", getListResourceResponse.getData().get(0).getName());
+                    assertEquals("fuchsia rose", getListResourceResponse.getData().get(1).getName());
+                    assertEquals("true red", getListResourceResponse.getData().get(2).getName());
+                    assertEquals("aqua sky", getListResourceResponse.getData().get(3).getName());
+                    assertEquals("tigerlily", getListResourceResponse.getData().get(4).getName());
+                    assertEquals("blue turquoise", getListResourceResponse.getData().get(5).getName());
+                }
+        );
     }
 
     @Test
