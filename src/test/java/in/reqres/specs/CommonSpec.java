@@ -14,19 +14,28 @@ import static org.hamcrest.core.IsNull.notNullValue;
 
 public class CommonSpec {
 
-    public static RequestSpecification createUserRequestSpec = with()
+    public static RequestSpecification userRequestSpec = with()
             .log().uri()
             .log().method()
             .log().body()
             .filter(withCustomTemplates())
             .contentType(JSON);
 
-    public static ResponseSpecification createUserResponseSpec = new ResponseSpecBuilder()
+    public static ResponseSpecification createUserResponseSpec201 = new ResponseSpecBuilder()
             .log(STATUS)
             .log(BODY)
             .expectBody("id", notNullValue())
             .expectBody("createdAt", notNullValue())
             .expectStatusCode(201)
             .expectBody(matchesJsonSchemaInClasspath("schemas/create-user-schema"))
+            .build();
+
+    public static ResponseSpecification getSingleUserResponseSpec200 = new ResponseSpecBuilder()
+            .log(STATUS)
+            .log(BODY)
+            .expectBody("data.email", notNullValue())
+            .expectBody("data.avatar", notNullValue())
+            .expectStatusCode(200)
+            .expectBody(matchesJsonSchemaInClasspath("schemas/get-single-user-schema"))
             .build();
 }

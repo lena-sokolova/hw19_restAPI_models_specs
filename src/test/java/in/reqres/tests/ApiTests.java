@@ -1,11 +1,11 @@
 package in.reqres.tests;
 
-import in.reqres.models.CreateBodyModel;
-import in.reqres.models.CreateResponseModel;
+import in.reqres.models.CreateUserModel;
+import in.reqres.models.CreateUserResponseModel;
+import in.reqres.models.GetSingleUserResponseModel;
 import org.junit.jupiter.api.Test;
 
-import static in.reqres.specs.CommonSpec.createUserRequestSpec;
-import static in.reqres.specs.CommonSpec.createUserResponseSpec;
+import static in.reqres.specs.CommonSpec.*;
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
@@ -19,19 +19,20 @@ public class ApiTests extends TestBase {
     @Test
     void getSingleUserTest() {
 
-        given()
-                .log().uri()
-                .log().method()
-                .log().body()
-                .contentType(JSON)
+        GetSingleUserResponseModel getSingleUserResponse = step("Make request", () ->
+                given(userRequestSpec)
                 .when()
                 .get("/users/2")
                 .then()
-                .log().status()
-                .log().body()
-                .statusCode(200)
-                .body("data.id", is(2))
-                .body("data.email", is("janet.weaver@reqres.in"));
+                .spec(getSingleUserResponseSpec200)
+                .extract().as(GetSingleUserResponseModel.class));
+
+        step("Check response", () -> {
+                    assertEquals(2, getSingleUserResponse.getData().getId());
+                    assertEquals("Janet", getSingleUserResponse.getData().getFirst_name());
+                    assertEquals("Weaver", getSingleUserResponse.getData().getLast_name());
+                }
+        );
     }
 
     @Test
@@ -56,18 +57,18 @@ public class ApiTests extends TestBase {
 
     @Test
     void successfulCreateUserTest() {
-        CreateBodyModel createData = new CreateBodyModel();
+        CreateUserModel createData = new CreateUserModel();
         createData.setName("morpheus");
         createData.setJob("leader");
 
-        CreateResponseModel createResponse = step("Make request", () ->
-                given(createUserRequestSpec)
+        CreateUserResponseModel createResponse = step("Make request", () ->
+                given(userRequestSpec)
                         .body(createData)
                         .when()
                         .post("/users")
                         .then()
-                        .spec(createUserResponseSpec)
-                        .extract().as(CreateResponseModel.class));
+                        .spec(createUserResponseSpec201)
+                        .extract().as(CreateUserResponseModel.class));
 
         step("Check response", () -> {
                     assertEquals("morpheus", createResponse.getName());
