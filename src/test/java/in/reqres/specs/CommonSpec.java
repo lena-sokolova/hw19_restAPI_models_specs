@@ -58,5 +58,11 @@ public class CommonSpec {
             .expectStatusCode(200)
             .expectBody(matchesJsonSchemaInClasspath("schemas/update-user-schema.json"))
             .build();
+
+    public static ResponseSpecification deleteUserResponseSpec204 = new ResponseSpecBuilder()
+            .log(STATUS)
+            .log(BODY)
+            .expectStatusCode(204)
+            .build();
 }
 

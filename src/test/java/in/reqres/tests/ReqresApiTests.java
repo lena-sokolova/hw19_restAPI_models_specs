@@ -6,10 +6,6 @@ import org.junit.jupiter.api.Test;
 import static in.reqres.specs.CommonSpec.*;
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
-import static io.restassured.http.ContentType.JSON;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ReqresApiTests extends TestBase {
@@ -19,11 +15,11 @@ public class ReqresApiTests extends TestBase {
 
         GetSingleUserResponseModel getSingleUserResponse = step("Make request", () ->
                 given(userRequestSpec)
-                .when()
-                .get("/users/2")
-                .then()
-                .spec(getSingleUserResponseSpec200)
-                .extract().as(GetSingleUserResponseModel.class));
+                        .when()
+                        .get("/users/2")
+                        .then()
+                        .spec(getSingleUserResponseSpec200)
+                        .extract().as(GetSingleUserResponseModel.class));
 
         step("Check response", () -> {
                     assertEquals(2, getSingleUserResponse.getData().getId());
@@ -38,11 +34,11 @@ public class ReqresApiTests extends TestBase {
 
         GetListResourceResponseModel getListResourceResponse = step("Make request", () ->
                 given(userRequestSpec)
-                .when()
-                .get("/unknown")
-                .then()
-                .spec(getListResourceResponseSpec200)
-                .extract().as(GetListResourceResponseModel.class));
+                        .when()
+                        .get("/unknown")
+                        .then()
+                        .spec(getListResourceResponseSpec200)
+                        .extract().as(GetListResourceResponseModel.class));
 
         step("Check response", () -> {
                     assertEquals(12, getListResourceResponse.getTotal());
@@ -87,12 +83,12 @@ public class ReqresApiTests extends TestBase {
 
         UpdateUserResponseModel updateUserResponse = step("Make request", () ->
                 given(userRequestSpec)
-                .body(updateData)
-                .when()
-                .put("/users/2")
-                .then()
-                .spec(updateUserResponseSpec200)
-                .extract().as(UpdateUserResponseModel.class));
+                        .body(updateData)
+                        .when()
+                        .put("/users/2")
+                        .then()
+                        .spec(updateUserResponseSpec200)
+                        .extract().as(UpdateUserResponseModel.class));
 
         step("Check response", () -> {
                     assertEquals("morpheus", updateUserResponse.getName());
@@ -104,16 +100,11 @@ public class ReqresApiTests extends TestBase {
     @Test
     void successfulDeleteUserTest() {
 
-        given()
-                .log().uri()
-                .log().method()
-                .log().body()
-                .contentType(JSON)
-                .when()
-                .delete("/users/2")
-                .then()
-                .log().status()
-                .log().body()
-                .statusCode(204);
+        step("Delete user", () ->
+                given(userRequestSpec)
+                        .when()
+                        .delete("/users/2")
+                        .then()
+                        .spec(deleteUserResponseSpec204));
     }
 }
